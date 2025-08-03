@@ -1,0 +1,29 @@
+
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <circle cx="128" cy="128" r="120" fill="#1a1a2e" stroke="#2563eb" stroke-width="6"/>
+  
+  <!-- Video Screen -->
+  <rect x="60" y="80" width="136" height="96" rx="12" fill="#0f172a" stroke="#374151" stroke-width="3"/>
+  
+  <!-- Play Button -->
+  <polygon points="100,110 100,146 130,128" fill="#10b981"/>
+  
+  <!-- Timeline -->
+  <rect x="60" y="190" width="136" height="16" rx="8" fill="#374151"/>
+  
+  <!-- Timeline Clips -->
+  <rect x="65" y="193" width="25" height="10" rx="3" fill="#3b82f6"/>
+  <rect x="95" y="193" width="35" height="10" rx="3" fill="#8b5cf6"/>
+  <rect x="135" y="193" width="20" height="10" rx="3" fill="#f59e0b"/>
+  <rect x="160" y="193" width="30" height="10" rx="3" fill="#ef4444"/>
+  
+  <!-- Cursor -->
+  <g transform="translate(150, 100)">
+    <polygon points="0,0 0,20 6,14 12,20 14,18 8,12 14,12 0,0" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+    <polygon points="2,2 2,16 6,12 10,16 12,14 8,10 12,10 2,2" fill="#10b981"/>
+  </g>
+  
+  <!-- Highlight ring -->
+  <circle cx="128" cy="128" r="115" fill="none" stroke="#10b981" stroke-width="2" opacity="0.8"/>
+</svg>

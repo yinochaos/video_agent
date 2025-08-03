@@ -1,0 +1,49 @@
+# TypeScript and React Coding Patterns
+
+## TypeScript Guidelines
+- Use strict TypeScript configuration as defined in [tsconfig.json](mdc:tsconfig.json)
+- Always use type annotations for function parameters and return types
+- Prefer interfaces over types for object shapes
+- Use `@/*` path alias for imports from src directory
+- Enable strict mode features: `noUnusedLocals`, `noUnusedParameters`
+
+## React Patterns
+- Use functional components with hooks
+- Prefer named exports over default exports
+- Use React 18 features and patterns
+- Implement proper TypeScript interfaces for props
+- Use React.memo() for performance optimization when needed
+
+## State Management
+- Use Zustand for global state management as implemented in [useEditorStore.ts](mdc:src/store/useEditorStore.ts)
+- Keep component state local when possible
+- Use proper TypeScript types for store state
+
+## Component Structure
+- Follow the established pattern from existing components in [src/components/](mdc:src/components/)
+- Large components (>500 lines) should be split into smaller, focused components
+- Use proper prop interfaces and default values
+- Implement proper error boundaries where needed
+
+## Import Organization
+```typescript
+// External libraries
+import React from 'react'
+import { fabric } from 'fabric'
+
+// Internal imports using @ alias
+import { useEditorStore } from '@/store/useEditorStore'
+import { Preview } from '@/components/Preview'
+
+// Relative imports for same directory
+import './styles.css'
+```
+
+## File Naming
+- Use PascalCase for component files: `ComponentName.tsx`
+- Use camelCase for utility files: `utilityName.ts`
+- Use kebab-case for CSS files: `component-name.css`
+description:
+globs:
+alwaysApply: false
+---

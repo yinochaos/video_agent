@@ -1,0 +1,385 @@
+/* Modern Professional Video Editor Theme */
+:root {
+  /* Core Colors */
+  --bg-darkest: #0a0a0a;
+  --bg-darker: #141414;
+  --bg-dark: #1a1a1a;
+  --bg-light: #242424;
+  
+  /* Accent Colors */
+  --accent-blue: #3b82f6;
+  --accent-purple: #8b5cf6;
+  --accent-pink: #ec4899;
+  --accent-gradient: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+  
+  /* Functional Colors */
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  
+  /* Text Colors */
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  
+  /* Border Colors */
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.2);
+  
+  /* Shadow Effects */
+  --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-strong: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+  
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Global Styles */
+body {
+  background-color: var(--bg-darkest);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* App Layout */
+.app {
+  background: var(--bg-darkest);
+}
+
+.app-toolbar {
+  background: var(--bg-darker);
+  border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(10px);
+  height: 52px;
+}
+
+.toolbar-left h1 {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+
+/* Sidebar */
+.sidebar-left {
+  background: var(--bg-darker);
+  border-right: 1px solid var(--border-subtle);
+  backdrop-filter: blur(10px);
+}
+
+/* Timeline Section */
+.timeline-section {
+  background: var(--bg-dark);
+  border-top: 2px solid var(--border-strong);
+}
+
+.timeline-track {
+  background: var(--bg-light);
+  border-radius: 6px;
+  margin: 0; /* Remove margin */
+  overflow: hidden;
+  position: relative; /* Add relative position */
+}
+
+.timeline-clip {
+  background: var(--accent-gradient);
+  border: none;
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(4px);
+  position: absolute; /* Add absolute position */
+}
+
+.timeline-clip:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-strong);
+}
+
+/* Preview Section */
+.preview-section {
+  background: var(--bg-darkest);
+  padding: 16px; /* Tighter padding */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent overflow */
+}
+
+.preview-video-container {
+  flex: 1; /* Allow container to grow */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 0; /* Allow shrinking */
+}
+
+.video-canvas {
+  border: 1px solid var(--border-strong); /* Subtle border */
+  border-radius: 8px; /* Softer radius */
+  box-shadow: var(--shadow-soft);
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* Ensure video aspect ratio is maintained */
+}
+
+.preview-controls {
+  flex-shrink: 0; /* Prevent controls from shrinking */
+}
+
+/* Controls */
+.control-btn {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+}
+
+.control-btn:hover {
+  background: var(--glass-bg);
+  border-color: var(--accent-purple);
+  transform: translateY(-1px);
+}
+
+.control-btn.active {
+  background: var(--accent-gradient);
+  border: none;
+}
+
+/* Progress Bars */
+.progress-slider {
+  height: 6px;
+  background: var(--bg-light);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-slider::-webkit-slider-thumb {
+  background: var(--accent-purple);
+  box-shadow: var(--shadow-soft);
+  width: 16px;
+  height: 16px;
+}
+
+/* Asset Panel */
+.asset-panel {
+  background: var(--bg-darker);
+}
+
+.file-item {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+}
+
+.file-item:hover {
+  background: var(--glass-bg);
+  border-color: var(--accent-purple);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-soft);
+}
+
+.file-item.selected {
+  background: var(--accent-gradient);
+  border: none;
+}
+
+/* Text Designer */
+.text-designer-container {
+  background: var(--bg-darker);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-strong);
+}
+
+.text-designer-header {
+  background: var(--bg-dark);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 20px;
+}
+
+.text-designer-controls {
+  background: var(--bg-light);
+  border-left: 1px solid var(--border-subtle);
+}
+
+/* Buttons */
+.btn {
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: var(--accent-gradient);
+  border: none;
+  box-shadow: var(--shadow-soft);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-strong);
+}
+
+.btn-secondary {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(4px);
+}
+
+.btn-secondary:hover {
+  border-color: var(--accent-purple);
+  transform: translateY(-1px);
+}
+
+/* Input Fields */
+input, select, textarea {
+  background: var(--bg-light);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  color: var(--text-primary);
+  padding: 10px 12px;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-light);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-purple);
+}
+
+/* Timeline Tracks */
+.timeline-track-container {
+  margin: 0; /* Remove margin */
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative; /* Add relative position */
+}
+
+.track-header {
+  background: var(--bg-darker);
+  border-right: 1px solid var(--border-subtle);
+  padding: 12px;
+  position: absolute; /* Add absolute position */
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 120px; /* Match JS constant */
+  z-index: 10;
+}
+
+.track-content {
+  margin-left: 120px; /* Match track header width */
+  width: calc(100% - 120px);
+}
+
+/* Export Dialog */
+.export-dialog {
+  background: var(--bg-darker);
+  border-radius: 10px; /* Even smaller radius */
+  overflow: hidden;
+  box-shadow: var(--shadow-strong);
+  max-width: 460px; /* More compact width */
+}
+
+.export-dialog-header {
+  background: var(--bg-dark);
+  padding: 12px 16px; /* Tighter padding */
+}
+
+.export-dialog-content {
+  background: var(--bg-darker);
+  padding: 16px; /* Tighter padding */
+}
+
+.setting-group select {
+  padding: 6px 8px; /* Smaller padding */
+  font-size: 12px; /* Smaller font */
+}
+
+.export-dialog-footer {
+  padding: 12px 16px; /* Tighter padding */
+}
+
+/* Playback Controls */
+.preview-controls {
+  padding: 6px 10px; /* Tighter padding */
+  gap: 6px;
+}
+
+.control-btn {
+  width: 28px; /* Smaller button size */
+  height: 28px; /* Smaller button size */
+  border-radius: 4px; /* Smaller radius */
+}
+
+.play-pause-btn {
+  width: 28px; /* Smaller button size */
+  height: 28px; /* Smaller button size */
+}
+
+.transport-controls {
+  gap: 4px; /* Tighter gap */
+}
+
+.secondary-controls {
+  gap: 8px; /* Tighter gap */
+}
+
+/* Animation Effects */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.timeline-clip {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.file-item {
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .sidebar-left {
+    width: 280px;
+  }
+  
+  .timeline-section {
+    height: 300px;
+  }
+}
+
+/* Glass Effect Modifiers */
+.glass-effect {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}

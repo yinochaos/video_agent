@@ -1,0 +1,59 @@
+# Electron Development Guidelines
+
+## Architecture Overview
+- Main process: [electron/main.ts](mdc:electron/main.ts) - Handles app lifecycle and native APIs
+- Preload script: [electron/preload.ts](mdc:electron/preload.ts) - Secure bridge between main and renderer
+- Renderer process: React application in [src/](mdc:src/)
+
+## Main Process Patterns
+- Use TypeScript for type safety
+- Implement proper error handling for native operations
+- Use IPC (Inter-Process Communication) for renderer communication
+- Follow Electron security best practices
+- Handle app lifecycle events properly
+
+## Preload Script Guidelines
+- Expose only necessary APIs to renderer process
+- Use contextBridge for secure API exposure
+- Validate all data passed between processes
+- Implement proper error handling
+
+## IPC Communication
+```typescript
+// Main process
+ipcMain.handle('api-call', async (event, data) => {
+  // Handle API call
+  return result
+})
+
+// Preload script
+contextBridge.exposeInMainWorld('electronAPI', {
+  apiCall: (data: any) => ipcRenderer.invoke('api-call', data)
+})
+
+// Renderer process
+window.electronAPI.apiCall(data)
+```
+
+## Security Considerations
+- Never expose Node.js APIs directly to renderer
+- Validate all IPC messages
+- Use contextIsolation: true
+- Implement proper CSP headers
+- Sanitize user inputs
+
+## Build Configuration
+- Configured in [vite.config.ts](mdc:vite.config.ts)
+- Source maps enabled for debugging
+- External Electron dependency properly configured
+- Separate build outputs for main and preload scripts
+
+## Development Workflow
+- Use `npm run dev` for development with hot reload
+- Use `npm run build:electron` for production builds
+- Test both web and desktop versions
+- Handle platform-specific features appropriately
+description:
+globs:
+alwaysApply: false
+---

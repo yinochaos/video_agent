@@ -1,0 +1,128 @@
+# Build and Deployment Configuration
+
+## Build System Overview
+
+### Vite Configuration
+- [vite.config.ts](mdc:vite.config.ts) - Main build configuration
+- React plugin for JSX transformation
+- Electron plugin for desktop app building
+- Path aliases configured with `@/*` for src directory
+- CORS headers configured for FFmpeg integration
+
+### TypeScript Configuration
+- [tsconfig.json](mdc:tsconfig.json) - TypeScript compiler settings
+- Strict mode enabled for type safety
+- Path mapping for clean imports
+- ES2020 target with modern features
+
+## Build Scripts
+
+### Development
+```bash
+npm run dev          # Start development server with Electron
+npm run electron     # Run Electron app directly
+npm run electron-dev # Run Electron in development mode
+```
+
+### Production Builds
+```bash
+npm run build        # Build web application
+npm run build:electron # Build Electron distribution
+npm run preview      # Preview built web application
+```
+
+### Quality Assurance
+```bash
+npm run lint         # ESLint code quality check
+npm run type-check   # TypeScript type checking
+```
+
+## Build Output Structure
+
+### Web Build (`dist/`)
+- `index.html` - Main HTML file
+- `assets/` - Compiled JavaScript and CSS bundles
+- Icon files in various formats and sizes
+- Optimized for web deployment
+
+### Electron Build (`dist/electron/`)
+- `main.js` - Main process bundle
+- `preload.js` - Preload script bundle
+- Source maps for debugging
+- Ready for Electron packaging
+
+## Electron Builder Configuration
+
+### Package Configuration
+- Configured in [package.json](mdc:package.json) build section
+- Multi-platform support (Windows, macOS, Linux)
+- App icons and metadata
+- File inclusion/exclusion rules
+
+### Platform-Specific Builds
+- **Windows**: NSIS installer and portable executable
+- **macOS**: DMG installer
+- **Linux**: AppImage format
+
+### Build Artifacts
+- Output directory: `release/`
+- Platform-specific binaries
+- Installer packages
+- Portable versions
+
+## Dependencies Management
+
+### Core Dependencies
+- React 18 for UI framework
+- TypeScript for type safety
+- Vite for build tooling
+- Electron for desktop app
+- Zustand for state management
+
+### Video Processing
+- FFmpeg for video manipulation
+- Fabric.js for canvas operations
+- Sharp for image processing
+
+### Development Tools
+- ESLint for code linting
+- Concurrently for parallel processes
+- Cross-env for environment variables
+
+## Performance Optimization
+
+### Bundle Optimization
+- Code splitting for large components
+- Tree shaking for unused code
+- Asset optimization and compression
+- Source map generation for debugging
+
+### FFmpeg Integration
+- Excluded from dependency optimization
+- WebAssembly-based processing
+- Cross-origin isolation headers
+- Memory-efficient video handling
+
+## Deployment Considerations
+
+### Web Deployment
+- Static file hosting
+- CORS configuration for FFmpeg
+- Asset optimization
+- CDN integration
+
+### Desktop Distribution
+- Code signing for security
+- Auto-updater integration
+- Platform-specific packaging
+- Installer customization
+
+## Environment Configuration
+- Development vs production builds
+- Environment-specific settings
+- Debug vs release modes
+- Platform-specific features
+description:
+globs:
+alwaysApply: false
+---

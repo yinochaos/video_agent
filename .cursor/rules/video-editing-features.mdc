@@ -1,0 +1,93 @@
+# Video Editing Features and FFmpeg Integration
+
+## Core Video Editing Components
+
+### Preview Component
+- [Preview.tsx](mdc:src/components/Preview.tsx) - Main video preview with canvas rendering
+- Uses Fabric.js for canvas manipulation
+- Handles video playback, scrubbing, and visual effects
+- Implements real-time preview updates
+
+### Timeline Component
+- [Timeline.tsx](mdc:src/components/Timeline.tsx) - Video timeline with track management
+- Supports multiple video tracks
+- Handles clip positioning and duration
+- Implements drag-and-drop functionality
+
+### Text Designer
+- [TextDesigner.tsx](mdc:src/components/TextDesigner.tsx) - Text overlay and design tools
+- Rich text editing capabilities
+- Font selection and styling
+- Position and animation controls
+
+### Asset Management
+- [AssetPanel.tsx](mdc:src/components/AssetPanel.tsx) - Media asset organization
+- File import and management
+- Asset categorization and search
+- Preview thumbnails
+
+### Export Functionality
+- [ExportDialog.tsx](mdc:src/components/ExportDialog.tsx) - Video export interface
+- Multiple export format options
+- Quality and resolution settings
+- Progress tracking
+
+## FFmpeg Integration
+
+### FFmpeg Utilities
+- [ffmpeg.ts](mdc:src/utils/ffmpeg.ts) - Core FFmpeg integration
+- Video processing operations
+- Format conversion utilities
+- Performance optimization
+
+### Key Features
+- Video format support (MP4, WebM, AVI, etc.)
+- Audio extraction and manipulation
+- Video compression and optimization
+- Frame extraction for thumbnails
+- Real-time preview generation
+
+## State Management for Video Editing
+
+### Editor Store
+- [useEditorStore.ts](mdc:src/store/useEditorStore.ts) - Central state management
+- Video timeline state
+- Asset management
+- Export settings
+- UI state coordination
+
+### State Structure
+```typescript
+interface EditorState {
+  timeline: TimelineState
+  assets: AssetState
+  preview: PreviewState
+  export: ExportState
+  ui: UIState
+}
+```
+
+## Performance Considerations
+- Use Web Workers for heavy video processing
+- Implement proper memory management for video assets
+- Optimize canvas rendering for smooth playback
+- Cache processed video segments
+- Use efficient data structures for timeline management
+
+## File Handling
+- Support for multiple video formats
+- Proper error handling for corrupted files
+- Progress indicators for large file operations
+- Memory-efficient file loading
+- Temporary file cleanup
+
+## User Experience
+- Real-time preview updates
+- Responsive timeline interaction
+- Intuitive drag-and-drop interface
+- Keyboard shortcuts for common operations
+- Undo/redo functionality
+description:
+globs:
+alwaysApply: false
+---
