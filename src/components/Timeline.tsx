@@ -641,31 +641,12 @@ const Timeline: React.FC = () => {
     console.log(`✅ 成功切割片段 ${targetClip.mediaFileId} 在时间点 ${currentTime.toFixed(2)}s`)
   }, [selectedClips, currentTime, tracks, splitClip])
 
-  // Handle keyboard events for clip operations
+  // Handle global keyboard events (for Escape key and other global shortcuts)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Check if the active element is within the timeline
-      const isInTimeline = timelineRef.current?.contains(document.activeElement)
-      const target = e.target as HTMLElement
-      const isTargetInTimeline = timelineRef.current?.contains(target)
-      
-      // Only handle delete/backspace if focus is within timeline
-      if ((e.key === 'Delete' || e.key === 'Backspace') && selectedClips.length > 0) {
-        if (isInTimeline || isTargetInTimeline) {
-          e.preventDefault()
-          removeSelectedClips()
-        }
-      }
       // Clear selection when Escape is pressed (this can work globally)
-      else if (e.key === 'Escape') {
+      if (e.key === 'Escape') {
         clearClipSelection()
-      }
-      // Split clip at playhead when Ctrl+B is pressed (only in timeline)
-      else if (e.key === 'b' && (e.ctrlKey || e.metaKey) && selectedClips.length > 0) {
-        if (isInTimeline || isTargetInTimeline) {
-          e.preventDefault()
-          handleSplitClip()
-        }
       }
     }
 
@@ -676,7 +657,7 @@ const Timeline: React.FC = () => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [selectedClips, removeSelectedClips, clearClipSelection, handleSplitClip])
+  }, [clearClipSelection])
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -730,7 +711,24 @@ const Timeline: React.FC = () => {
   }, [playheadSelected, playheadDragging])
 
   return (
-    <div className="timeline">
+    <div 
+      className="timeline"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        // Handle keyboard events directly on the timeline element
+        if (e.key === 'Delete' || e.key === 'Backspace') {
+          if (selectedClips.length > 0) {
+            e.preventDefault()
+            removeSelectedClips()
+          }
+        } else if (e.key === 'Escape') {
+          clearClipSelection()
+        } else if (e.key === 'b' && (e.ctrlKey || e.metaKey) && selectedClips.length > 0) {
+          e.preventDefault()
+          handleSplitClip()
+        }
+      }}
+    >
       <div className="timeline-header">
         <div className="timeline-controls">
           <label>
@@ -764,6 +762,9 @@ const Timeline: React.FC = () => {
           
           <div className="split-hint" title="Ctrl+B: 在红线位置切割选中的片段">
             <kbd>Ctrl+B</kbd>
+          </div>
+          <div className="delete-hint" title="选中片段后按Delete键删除">
+            <kbd>Delete</kbd>
           </div>
         </div>
       </div>

@@ -48,12 +48,10 @@ export interface UndoAction {
     removedClips?: Array<{ clip: TimelineClip; trackId: string }>
     
     // For UPDATE_CLIP
-    clipId?: string
     oldClip?: TimelineClip
     newClip?: TimelineClip
     
     // For MOVE_CLIP
-    clipId?: string
     oldTrackId?: string
     newTrackId?: string
     oldStartTime?: number
