@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react'
-import { Search, Plus, Trash2, FolderOpen } from 'lucide-react'
+import { Search, Plus, Trash2, FolderOpen, Subtitles } from 'lucide-react'
+import SubtitleExtractorDialog from './SubtitleExtractorDialog'
 import { useEditorStore, MediaFile } from '../store/useEditorStore'
 import { t } from '../utils/i18n'
 
@@ -27,6 +28,9 @@ const AssetPanel: React.FC = () => {
 
   const [searchTerm, setSearchTerm] = useState('')
   const [isDragOver, setIsDragOver] = useState(false)
+  const [showSubtitleExtractor, setShowSubtitleExtractor] = useState(false)
+  const [selectedFileForSubtitles, setSelectedFileForSubtitles] = useState<MediaFile | null>(null)
+  const [batchMode, setBatchMode] = useState<boolean>(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Filter files based on search term
@@ -192,6 +196,33 @@ const AssetPanel: React.FC = () => {
     })
     clearSelection()
   }, [selectedMediaFiles, removeMediaFile, clearSelection])
+  
+  // 处理单个文件字幕提取
+  const handleExtractSubtitles = useCallback((file: MediaFile) => {
+    if (file.type !== 'video') {
+      console.warn('只能为视频文件提取字幕')
+      return
+    }
+    
+    setBatchMode(false)
+    setSelectedFileForSubtitles(file)
+    setShowSubtitleExtractor(true)
+  }, [])
+  
+  // 处理批量字幕提取
+  const handleBatchExtractSubtitles = useCallback(() => {
+    // 获取所有视频文件
+    const videoFiles = mediaFiles.filter(file => file.type === 'video')
+    
+    if (videoFiles.length === 0) {
+      console.warn('没有可用的视频文件')
+      return
+    }
+    
+    setBatchMode(true)
+    setSelectedFileForSubtitles(null)
+    setShowSubtitleExtractor(true)
+  }, [mediaFiles])
 
   // Listen for menu import events
   React.useEffect(() => {
@@ -211,6 +242,13 @@ const AssetPanel: React.FC = () => {
             title={t('importFiles', language)}
           >
             <Plus size={16} />
+          </button>
+          <button
+            className="btn btn-secondary"
+            onClick={handleBatchExtractSubtitles}
+            title="批量提取字幕"
+          >
+            <Subtitles size={16} />
           </button>
           {selectedMediaFiles.length > 0 && (
             <button
@@ -272,6 +310,18 @@ const AssetPanel: React.FC = () => {
                   <div className="file-meta">
                     <span className="file-duration">{formatDuration(file.duration)}</span>
                     <span className="file-size">{formatFileSize(file.size)}</span>
+                    {file.type === 'video' && (
+                      <button 
+                        className="extract-subtitles-btn" 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleExtractSubtitles(file);
+                        }}
+                        title="提取字幕"
+                      >
+                        <Subtitles size={14} />
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -279,8 +329,16 @@ const AssetPanel: React.FC = () => {
           </div>
         )}
       </div>
+      
+      {/* 字幕提取对话框 */}
+      <SubtitleExtractorDialog
+        isOpen={showSubtitleExtractor}
+        onClose={() => setShowSubtitleExtractor(false)}
+        mediaFile={selectedFileForSubtitles || undefined}
+        isBatchMode={batchMode}
+      />
     </div>
   )
 }
 
-export default AssetPanel 
+export default AssetPanel

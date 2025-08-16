@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Download, Undo, Redo, History } from 'lucide-react'
+import { Download, Undo, Redo, History, Mic } from 'lucide-react'
 import AssetPanel from './components/AssetPanel'
 import Timeline from './components/Timeline'
 import Preview from './components/Preview'
 import ExportDialog from './components/ExportDialog'
 import TextDesigner from './components/TextDesigner'
 import ChatPanel from './components/ChatPanel'
+import AsrTestDialog from './components/AsrTestDialog'
 import { useEditorStore } from './store/useEditorStore'
 import { t } from './utils/i18n'
 import './styles/app.css'
@@ -13,6 +14,7 @@ import './styles/app.css'
 const App: React.FC = () => {
   const { language, undo, redo, undoStack, redoStack } = useEditorStore()
   const [showExportDialog, setShowExportDialog] = useState(false)
+  const [showAsrTestDialog, setShowAsrTestDialog] = useState(false)
 
   // Listen for menu export events
   useEffect(() => {
@@ -59,6 +61,11 @@ const App: React.FC = () => {
   const handleExportClick = () => {
     console.log('🎬 Export button clicked')
     setShowExportDialog(true)
+  }
+  
+  const handleAsrTestClick = () => {
+    console.log('🎤 ASR test button clicked')
+    setShowAsrTestDialog(true)
   }
 
   return (
@@ -115,6 +122,14 @@ const App: React.FC = () => {
         
         <div className="toolbar-right">
           <button
+            className="btn btn-secondary"
+            onClick={handleAsrTestClick}
+            title="ASR语音识别测试"
+          >
+            <Mic size={16} />
+            语音识别测试
+          </button>
+          <button
             className="btn btn-primary"
             onClick={handleExportClick}
             title={t('exportVideo', language)}
@@ -158,6 +173,12 @@ const App: React.FC = () => {
       
       {/* Text Designer */}
       <TextDesigner />
+
+      {/* ASR Test Dialog */}
+      <AsrTestDialog
+        isOpen={showAsrTestDialog}
+        onClose={() => setShowAsrTestDialog(false)}
+      />
     </div>
   )
 }

@@ -2,6 +2,8 @@ import { app, BrowserWindow, Menu, dialog, ipcMain } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
+import fs from 'node:fs/promises'
+import { spawn } from 'node:child_process'
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -302,6 +304,94 @@ const createMenu = () => {
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
 }
+
+// 文件操作处理程序
+ipcMain.handle('read-file', async (event, filePath) => {
+  try {
+    const buffer = await fs.readFile(filePath)
+    return { buffer, success: true }
+  } catch (error) {
+    console.error('读取文件失败:', error)
+    return { error: String(error), success: false }
+  }
+})
+
+ipcMain.handle('write-file', async (event, options) => {
+  const { path, content } = options
+  try {
+    await fs.writeFile(path, content)
+    return { success: true }
+  } catch (error) {
+    console.error('写入文件失败:', error)
+    return { error: String(error), success: false }
+  }
+})
+
+// MP4转MP3处理程序
+ipcMain.handle('convert-to-mp3', async (event, options) => {
+  const { inputPath, outputPath } = options
+  
+  console.log(`🎬 开始将视频转换为MP3: ${inputPath} -> ${outputPath}`)
+  
+  return new Promise((resolve, reject) => {
+    // ffmpeg -i input.mp4 -vn -ar 16000 -ac 1 -b:a 32k -y output.mp3
+    const ffmpeg = spawn('ffmpeg', [
+      '-i', inputPath,
+      '-vn',
+      '-ar', '16000',
+      '-ac', '1',
+      '-b:a', '32k',
+      '-y',
+      outputPath
+    ])
+    
+    let stderr = ''
+    let totalDuration = 0
+    
+    ffmpeg.stderr.on('data', (data) => {
+      const output = data.toString()
+      stderr += output
+      
+      // Parse duration from FFmpeg output
+      const durationMatch = output.match(/Duration: (\d{2}):(\d{2}):(\d{2})\.(\d{2})/)
+      if (durationMatch) {
+        const hours = parseInt(durationMatch[1])
+        const minutes = parseInt(durationMatch[2])
+        const seconds = parseInt(durationMatch[3])
+        totalDuration = hours * 3600 + minutes * 60 + seconds
+      }
+      
+      // Parse progress
+      const timeMatch = output.match(/time=(\d{2}):(\d{2}):(\d{2})\.(\d{2})/)
+      if (timeMatch && totalDuration > 0) {
+        const hours = parseInt(timeMatch[1])
+        const minutes = parseInt(timeMatch[2])
+        const seconds = parseInt(timeMatch[3])
+        const currentTime = hours * 3600 + minutes * 60 + seconds
+        const progress = Math.min((currentTime / totalDuration) * 100, 100)
+        
+        // Send progress to renderer
+        event.sender.send('ffmpeg-progress', progress)
+      }
+    })
+    
+    ffmpeg.on('error', (error) => {
+      console.error('❌ FFmpeg进程错误:', error)
+      reject({ success: false, error: `FFmpeg进程失败: ${error.message}` })
+    })
+    
+    ffmpeg.on('close', (code) => {
+      if (code === 0) {
+        console.log('✅ MP3转换成功')
+        resolve({ success: true, outputPath })
+      } else {
+        console.error('❌ FFmpeg退出码:', code)
+        console.error('错误输出:', stderr)
+        reject({ success: false, error: `FFmpeg执行失败 (退出码: ${code})` })
+      }
+    })
+  })
+})
 
 app.whenReady().then(() => {
   createMenu()

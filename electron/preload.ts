@@ -5,10 +5,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // File operations
   showOpenDialog: () => ipcRenderer.invoke('show-open-dialog'),
   showSaveDialog: () => ipcRenderer.invoke('show-save-dialog'),
+  readFile: (path: string) => ipcRenderer.invoke('read-file', path),
+  writeFile: (options: { path: string, content: string }) => ipcRenderer.invoke('write-file', options),
   
   // FFmpeg operations
   checkFFmpeg: () => ipcRenderer.invoke('check-ffmpeg'),
   runFFmpeg: (options: any) => ipcRenderer.invoke('run-ffmpeg', options),
+  convertToMp3: (options: { inputPath: string, outputPath: string, onProgress?: (progress: number) => void }) => {
+    if (options.onProgress) {
+      ipcRenderer.on('ffmpeg-progress', (event, progress) => options.onProgress!(progress))
+    }
+    return ipcRenderer.invoke('convert-to-mp3', { inputPath: options.inputPath, outputPath: options.outputPath })
+  },
   onFFmpegProgress: (callback: (progress: number) => void) => {
     ipcRenderer.on('ffmpeg-progress', (event, progress) => callback(progress))
   },

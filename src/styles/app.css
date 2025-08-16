@@ -556,6 +556,26 @@ body {
   gap: 8px;
   font-size: 12px;
   color: #999;
+  align-items: center;
+}
+
+.extract-subtitles-btn {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 2px;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+
+.extract-subtitles-btn:hover {
+  color: #4a90e2;
+  background-color: rgba(74, 144, 226, 0.1);
 }
 
 /* Timeline Styles */
