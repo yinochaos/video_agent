@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react'
-import { Magnet, Type } from 'lucide-react'
+import { Magnet, Type, Wand2 } from 'lucide-react'
 import { useEditorStore, TimelineClip, Track } from '../store/useEditorStore'
 import { t } from '../utils/i18n'
+import SmartEditButton from './SmartEditButton'
 
 const Timeline: React.FC = () => {
   const {
@@ -363,14 +364,22 @@ const Timeline: React.FC = () => {
     const x = Math.round(timeToPixels(clip.startTime)) // Round final position for pixel alignment
     const width = Math.round(timeToPixels(clip.duration))
     
-    // Find the media file to get its name
-    const mediaFile = mediaFiles.find(file => file.id === clip.mediaFileId)
-    const clipName = mediaFile?.name || clip.mediaFileId
+    // Find the track for this clip
+    const track = tracks.find(t => t.id === clip.trackId)
+    const isTextClip = track?.type === 'text'
+    
+    // Find the media file for this clip (if not a text clip)
+    const mediaFile = !isTextClip ? mediaFiles.find(file => file.id === clip.mediaFileId) : null
+
+    // Determine clip name - for text clips, show the text content
+    const clipName = isTextClip 
+      ? (clip.text || 'Text') 
+      : (mediaFile?.name || clip.mediaFileId)
 
     return (
       <div
         key={clip.id}
-        className={`timeline-clip ${draggedClip?.id === clip.id ? 'dragging' : ''} ${resizingClip?.clipId === clip.id ? 'resizing' : ''} ${selectedClips.includes(clip.id) ? 'selected' : ''}`}
+        className={`timeline-clip ${isTextClip ? 'text-clip' : ''} ${draggedClip?.id === clip.id ? 'dragging' : ''} ${resizingClip?.clipId === clip.id ? 'resizing' : ''} ${selectedClips.includes(clip.id) ? 'selected' : ''}`}
         style={{
           left: `${x}px`, // Use px unit for precise positioning
           width: `${Math.max(width, 30)}px`, // Ensure minimum width for handles
@@ -379,8 +388,14 @@ const Timeline: React.FC = () => {
         onMouseDown={(e) => handleClipDragStart(clip, e)}
       >
         <div className="clip-content">
-          {width > 60 && (
-            <span className="clip-name" title={clipName}>{clipName}</span>
+          {isTextClip ? (
+            <div className="text-clip-content" title={clip.text}>
+              {clip.text && width > 40 ? clip.text.substring(0, Math.floor(width / 8)) : '...'}
+            </div>
+          ) : (
+            width > 60 && (
+              <span className="clip-name" title={clipName}>{clipName}</span>
+            )
           )}
           {resizingClip?.clipId === clip.id && (
             <div className="clip-trim-info">
@@ -587,6 +602,11 @@ const Timeline: React.FC = () => {
     const isVideoTrack = track.type === 'video'
     const isAudioMedia = draggedMediaType === 'audio'
     const isAudioTrack = track.type === 'audio'
+    const isTextTrack = track.type === 'text'
+    
+    // Text tracks are not compatible with direct media drag and drop
+    // They are populated by the smart editing function
+    if (isTextTrack) return false
     
     return (isVideoMedia && isVideoTrack) || (isAudioMedia && isAudioTrack)
   }, [draggedMediaType])
@@ -759,6 +779,8 @@ const Timeline: React.FC = () => {
           >
             <Type size={16} />
           </button>
+          
+          <SmartEditButton />
           
           <div className="split-hint" title="Ctrl+B: 在红线位置切割选中的片段">
             <kbd>Ctrl+B</kbd>

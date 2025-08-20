@@ -74,11 +74,13 @@ const AssetPanel: React.FC = () => {
     const name = filePath.split('/').pop() || filePath.split('\\').pop() || filePath
     const extension = name.split('.').pop()?.toLowerCase() || ''
     
-    let type: 'video' | 'audio' | 'image' = 'video'
+    let type: 'video' | 'audio' | 'image' | 'srt' = 'video'
     if (['mp3', 'wav', 'aac', 'ogg'].includes(extension)) {
       type = 'audio'
     } else if (['jpg', 'jpeg', 'png', 'gif'].includes(extension)) {
       type = 'image'
+    } else if (extension === 'srt') {
+      type = 'srt'
     }
 
     // For Electron, we can use file:// protocol directly

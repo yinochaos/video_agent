@@ -174,8 +174,8 @@ const SubtitleExtractorDialog: React.FC<SubtitleExtractorDialogProps> = ({
       addLog('开始提取字幕...', 'info')
       
       // 读取MP3文件
-      const mp3File = await window.electronAPI.readFile(pathToUse)
-      if (!mp3File) {
+      const mp3File = await window.electronAPI.readFileAsBuffer(pathToUse)
+      if (!mp3File || !mp3File.buffer) {
         throw new Error('无法读取MP3文件')
       }
       

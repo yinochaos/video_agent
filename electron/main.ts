@@ -1,9 +1,18 @@
-import { app, BrowserWindow, Menu, dialog, ipcMain } from 'electron'
+import { app, BrowserWindow, Menu, dialog, ipcMain, shell } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import fs from 'node:fs/promises'
 import { spawn } from 'node:child_process'
+import log from 'electron-log'
+
+// Configure electron-log
+log.transports.file.resolvePath = () => path.join(app.getPath('userData'), 'logs/main.log');
+log.transports.console.level = 'info';
+log.transports.file.level = 'info';
+
+// Redirect console to electron-log
+Object.assign(console, log.functions);
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -242,6 +251,11 @@ ipcMain.handle('run-ffmpeg', async (event, options) => {
   })
 })
 
+// IPC handler for logging from renderer process
+ipcMain.on('log', (event, { level, message }) => {
+  log[level](message);
+});
+
 // Create application menu
 const createMenu = () => {
   const template: Electron.MenuItemConstructorOptions[] = [
@@ -298,6 +312,17 @@ const createMenu = () => {
         { type: 'separator' },
         { role: 'togglefullscreen' }
       ]
+    },
+    {
+      label: 'Help',
+      submenu: [
+        {
+          label: 'Show Logs in Finder',
+          click: () => {
+            shell.showItemInFolder(log.transports.file.getFile().path);
+          }
+        }
+      ]
     }
   ]
 
@@ -308,13 +333,23 @@ const createMenu = () => {
 // 文件操作处理程序
 ipcMain.handle('read-file', async (event, filePath) => {
   try {
-    const buffer = await fs.readFile(filePath)
-    return { buffer, success: true }
+    const content = await fs.readFile(filePath, 'utf-8');
+    return { content, success: true };
   } catch (error) {
-    console.error('读取文件失败:', error)
-    return { error: String(error), success: false }
+    console.error('读取文件失败:', error);
+    return { error: String(error), success: false };
   }
-})
+});
+
+ipcMain.handle('read-file-as-buffer', async (event, filePath) => {
+  try {
+    const buffer = await fs.readFile(filePath);
+    return { buffer, success: true };
+  } catch (error) {
+    console.error('读取文件为Buffer失败:', error);
+    return { error: String(error), success: false };
+  }
+});
 
 ipcMain.handle('write-file', async (event, options) => {
   const { path, content } = options

@@ -5,7 +5,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // File operations
   showOpenDialog: () => ipcRenderer.invoke('show-open-dialog'),
   showSaveDialog: () => ipcRenderer.invoke('show-save-dialog'),
-  readFile: (path: string) => ipcRenderer.invoke('read-file', path),
+  readFile: (path: string): Promise<{ content?: string; success: boolean; error?: string }> => ipcRenderer.invoke('read-file', path),
+  readFileAsBuffer: (path: string): Promise<{ buffer?: Buffer; success: boolean; error?: string }> => ipcRenderer.invoke('read-file-as-buffer', path),
   writeFile: (options: { path: string, content: string }) => ipcRenderer.invoke('write-file', options),
   
   // FFmpeg operations
@@ -32,6 +33,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Remove listeners
   removeAllListeners: (channel: string) => {
     ipcRenderer.removeAllListeners(channel)
+  },
+  
+  // Logging
+  log: (level: 'info' | 'warn' | 'error' | 'debug', message: string) => {
+    ipcRenderer.send('log', { level, message });
   }
 })
 

@@ -15,7 +15,11 @@ declare global {
       removeAllListeners: (channel: string) => void
       onMenuImportMedia: (callback: () => void) => void
       onMenuExportVideo: (callback: () => void) => void
-      writeFile?: (path: string, data: Uint8Array) => Promise<void>
+      writeFile: (options: { path: string, content: string }) => Promise<{ success: boolean; error?: string }>
+      readFile: (path: string) => Promise<{ content?: string; success: boolean; error?: string }>
+      readFileAsBuffer: (path: string) => Promise<{ buffer?: Buffer; success: boolean; error?: string }>
+      log: (level: 'info' | 'warn' | 'error' | 'debug', message: string) => void
+      convertToMp3: (options: { inputPath: string, outputPath: string, onProgress?: (progress: number) => void }) => Promise<{ success: boolean; error?: string }>
     }
   }
 }

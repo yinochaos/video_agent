@@ -4,7 +4,7 @@ export interface MediaFile {
   id: string
   name: string
   path: string
-  type: 'video' | 'audio' | 'image'
+  type: 'video' | 'audio' | 'image' | 'srt'
   duration?: number
   size: number
   thumbnail?: string
@@ -20,11 +20,12 @@ export interface TimelineClip {
   inPoint: number
   outPoint: number
   duration: number
+  text?: string // Optional text content for text clips
 }
 
 export interface Track {
   id: string
-  type: 'video' | 'audio'
+  type: 'video' | 'audio' | 'text'
   name: string
   height: number
   clips: TimelineClip[]
@@ -202,6 +203,15 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       type: 'video',
       name: 'V1',
       height: 65,
+      clips: [],
+      muted: false,
+      volume: 1
+    },
+    {
+      id: 'text-1',
+      type: 'text',
+      name: 'T1',
+      height: 40,
       clips: [],
       muted: false,
       volume: 1

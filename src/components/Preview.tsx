@@ -102,6 +102,25 @@ const Preview: React.FC = () => {
 
     return activeAudioClips
   }, [tracks, mediaFiles])
+  
+  // Get active text clips (subtitles) at the given time
+  const getActiveTextClips = useCallback((time: number) => {
+    const textTracks = tracks.filter(track => track.type === 'text')
+    const activeTextClips: Array<{ clip: any, text: string }> = []
+
+    textTracks.forEach(track => {
+      track.clips.forEach(clip => {
+        if (time >= clip.startTime && time < clip.endTime && clip.text) {
+          activeTextClips.push({ 
+            clip, 
+            text: clip.text 
+          })
+        }
+      })
+    })
+
+    return activeTextClips
+  }, [tracks])
 
   // Render current frame to canvas
   const renderFrame = useCallback(() => {
@@ -1082,6 +1101,15 @@ const Preview: React.FC = () => {
           {/* Timecode overlay */}
           <div className="timecode-overlay">
             {formatTimecode(currentTime)}
+          </div>
+          
+          {/* Subtitle overlay */}
+          <div className="subtitle-overlay">
+            {getActiveTextClips(currentTime).map((textClip, index) => (
+              <div key={index} className="subtitle-text">
+                {textClip.text}
+              </div>
+            ))}
           </div>
         </div>
       </div>

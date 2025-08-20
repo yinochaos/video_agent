@@ -60,7 +60,12 @@ export const translations = {
     hours: '小时',
     fps: 'fps',
     kbps: 'kbps',
-    mbps: 'Mbps'
+    mbps: 'Mbps',
+    
+    // Smart Edit
+    smartEdit: '智能剪辑',
+    processing: '处理中...',
+    textTrack: '字幕轨道'
   },
   
   en: {
@@ -124,7 +129,12 @@ export const translations = {
     hours: 'hours',
     fps: 'fps',
     kbps: 'kbps',
-    mbps: 'Mbps'
+    mbps: 'Mbps',
+    
+    // Smart Edit
+    smartEdit: 'Smart Edit',
+    processing: 'Processing...',
+    textTrack: 'Text Track'
   }
 }
 
