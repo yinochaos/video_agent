@@ -188,8 +188,8 @@ export async function smartEdit(): Promise<SmartEditResult> {
           continue;
         };
 
-        const start = parseSrtTime(part.start);
-        const end = parseSrtTime(part.end);
+        const start = parseFloat(part.start);
+        const end = parseFloat(part.end);
         const duration = end - start;
         
         if (duration <= 0) continue;

@@ -336,7 +336,7 @@ const Timeline: React.FC = () => {
     }
 
     return (
-      <div className="time-ruler" style={{ height: RULER_HEIGHT }}>
+      <div className="time-ruler" style={{ height: RULER_HEIGHT, width: `${width + TRACK_HEADER_WIDTH}px` }}>
         {ticks}
       </div>
     )
@@ -730,6 +730,36 @@ const Timeline: React.FC = () => {
     }
   }, [playheadSelected, playheadDragging])
 
+  // 计算时间轴内容总宽度
+  const timelineWidth = Math.max(1000, timeToPixels(duration) + TRACK_HEADER_WIDTH + 100); // 添加额外空间
+
+  // 处理时间轴滚动到当前播放头位置
+  const scrollToPlayhead = useCallback(() => {
+    if (!timelineRef.current) return;
+    
+    const playheadX = timeToPixels(currentTime) + TRACK_HEADER_WIDTH;
+    const viewportWidth = timelineRef.current.clientWidth;
+    const scrollLeft = timelineRef.current.scrollLeft;
+    const scrollRight = scrollLeft + viewportWidth;
+    
+    // 如果播放头不在可见区域内，滚动到合适位置
+    if (playheadX < scrollLeft || playheadX > scrollRight) {
+      // 将播放头放在视口中间位置
+      timelineRef.current.scrollLeft = playheadX - (viewportWidth / 2);
+    }
+  }, [currentTime, timeToPixels]);
+
+  // 当播放头位置变化时，自动滚动到可见区域
+  useEffect(() => {
+    if (playheadDragging || resizingClip) return; // 拖动过程中不自动滚动
+    scrollToPlayhead();
+  }, [currentTime, scrollToPlayhead, playheadDragging, resizingClip]);
+
+  // 当zoom变化时，保持当前播放头位置可见
+  useEffect(() => {
+    scrollToPlayhead();
+  }, [zoom, scrollToPlayhead]);
+
   return (
     <div 
       className="timeline"
@@ -794,35 +824,42 @@ const Timeline: React.FC = () => {
       <div
         ref={timelineRef}
         className="timeline-content"
-        style={{ height: TIMELINE_HEIGHT }}
+        style={{ 
+          height: TIMELINE_HEIGHT,
+          width: '100%', // 确保容器填满父元素宽度
+          overflowX: 'auto', // 确保水平滚动
+          position: 'relative'
+        }}
         onClick={handleTimelineClick}
         onDragOver={handleDragOver}
       >
-        {renderTimeRuler()}
-        {renderPlayhead()}
-        
-        <div className="timeline-tracks">
-          {tracks.map((track, index) => {
-            const isCompatible = isTrackCompatible(track)
-            const isDragOver = dragOverTrack === track.id
-            const isDragging = draggedMediaType !== null
-            
-            return (
-              <div
-                key={track.id}
-                className={`timeline-track-container ${
-                  isDragOver ? 'drag-over' : ''
-                } ${
-                  isDragging && !isCompatible ? 'drag-incompatible' : ''
-                }`}
-                onDrop={(e) => handleDrop(e, track.id)}
-                onDragOver={(e) => handleDragOver(e, track.id)}
-                onDragLeave={handleDragLeave}
-              >
-                {renderTrack(track, index)}
-              </div>
-            )
-          })}
+        <div style={{ width: `${timelineWidth}px`, position: 'relative' }}>
+          {renderTimeRuler()}
+          {renderPlayhead()}
+          
+          <div className="timeline-tracks" style={{ width: `${timelineWidth}px` }}>
+            {tracks.map((track, index) => {
+              const isCompatible = isTrackCompatible(track)
+              const isDragOver = dragOverTrack === track.id
+              const isDragging = draggedMediaType !== null
+              
+              return (
+                <div
+                  key={track.id}
+                  className={`timeline-track-container ${
+                    isDragOver ? 'drag-over' : ''
+                  } ${
+                    isDragging && !isCompatible ? 'drag-incompatible' : ''
+                  }`}
+                  onDrop={(e) => handleDrop(e, track.id)}
+                  onDragOver={(e) => handleDragOver(e, track.id)}
+                  onDragLeave={handleDragLeave}
+                >
+                  {renderTrack(track, index)}
+                </div>
+              )
+            })}
+          </div>
         </div>
       </div>
     </div>

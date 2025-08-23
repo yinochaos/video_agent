@@ -1,0 +1,58 @@
+---
+description: UI progress tracking and status updates
+globs: src/components/*Dialog.tsx
+alwaysApply: false
+---
+# UI Progress Tracking Guidelines
+
+## Progress Indicators
+
+### Status Tracking
+- Always use state variables to track processing status
+- Update UI in real-time with processing progress
+- Show clear indicators for each processing stage
+- Provide visual feedback during long-running operations
+
+### Batch Processing
+- Track both individual item progress and overall batch progress
+- Use `useEffect` hooks to update batch progress based on current item and total count
+- Avoid direct progress updates within processing loops
+- Calculate overall progress as: `(currentIndex / totalItems) * 100 + currentItemProgress / totalItems`
+
+### Progress Bar Components
+- Show detailed step information alongside progress bars
+- Use color coding for different status types (processing, success, error)
+- Include both percentage and step indicators
+- Ensure smooth transitions between progress states
+
+## Status Messaging
+
+### Log Entries
+- Include timestamps in all log messages
+- Use different styling for different message types (info, success, error)
+- Show detailed error information when operations fail
+- Provide actionable context in error messages
+
+### Modal Dialogs
+- Keep users informed with modal header information
+- Show clear action buttons based on current processing state
+- Disable actions during processing
+- Provide cancel options for long-running operations
+
+## Example Implementation
+
+```tsx
+// Track both overall progress and current item progress
+const [progress, setProgress] = useState(0);
+const [batchProgress, setBatchProgress] = useState(0);
+const [currentIndex, setCurrentIndex] = useState(0);
+
+// Update overall progress based on current item progress
+useEffect(() => {
+  if (isProcessing && totalItems > 0) {
+    const overallProgress = 
+      (currentIndex / totalItems) * 100 + progress / totalItems;
+    setBatchProgress(Math.min(overallProgress, 100));
+  }
+}, [progress, currentIndex, totalItems, isProcessing]);
+```

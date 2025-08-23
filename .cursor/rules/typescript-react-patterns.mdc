@@ -1,10 +1,15 @@
+---
+description: TypeScript and React patterns for the video processing application
+globs: *.ts,*.tsx
+alwaysApply: false
+---
 # TypeScript and React Coding Patterns
 
 ## TypeScript Guidelines
 - Use strict TypeScript configuration as defined in [tsconfig.json](mdc:tsconfig.json)
 - Always use type annotations for function parameters and return types
 - Prefer interfaces over types for object shapes
-- Use `@/*` path alias for imports from src directory
+- Use proper naming conventions: PascalCase for types/interfaces, camelCase for variables/functions
 - Enable strict mode features: `noUnusedLocals`, `noUnusedParameters`
 
 ## React Patterns
@@ -31,9 +36,9 @@
 import React from 'react'
 import { fabric } from 'fabric'
 
-// Internal imports using @ alias
-import { useEditorStore } from '@/store/useEditorStore'
-import { Preview } from '@/components/Preview'
+// Internal imports
+import { useEditorStore } from '../store/useEditorStore'
+import { Preview } from '../components/Preview'
 
 // Relative imports for same directory
 import './styles.css'
@@ -43,7 +48,3 @@ import './styles.css'
 - Use PascalCase for component files: `ComponentName.tsx`
 - Use camelCase for utility files: `utilityName.ts`
 - Use kebab-case for CSS files: `component-name.css`
-description:
-globs:
-alwaysApply: false
----

@@ -1,93 +1,189 @@
-# Video Editing Features and FFmpeg Integration
+---
+description: Video processing and media understanding features
+globs: src/components/*Dialog.tsx,src/services/aiService.ts,src/utils/ffmpeg.ts
+alwaysApply: false
+---
+# Video Editing Features and AI Integration
 
-## Core Video Editing Components
+## Video Processing Components
 
-### Preview Component
-- [Preview.tsx](mdc:src/components/Preview.tsx) - Main video preview with canvas rendering
-- Uses Fabric.js for canvas manipulation
-- Handles video playback, scrubbing, and visual effects
-- Implements real-time preview updates
+### Visual Processing
 
-### Timeline Component
-- [Timeline.tsx](mdc:src/components/Timeline.tsx) - Video timeline with track management
-- Supports multiple video tracks
-- Handles clip positioning and duration
-- Implements drag-and-drop functionality
+#### Preview Component [Preview.tsx](mdc:src/components/Preview.tsx)
+- Real-time video preview with canvas overlay
+- Features:
+  - Frame-accurate playback control
+  - Custom video controls (play, pause, seek)
+  - Canvas-based effect rendering
+  - Support for multiple video formats
+- Technical Implementation:
+  - Uses Fabric.js for canvas manipulation
+  - Hardware-accelerated video rendering
+  - Custom video buffer management
+  - Frame-by-frame navigation
 
-### Text Designer
-- [TextDesigner.tsx](mdc:src/components/TextDesigner.tsx) - Text overlay and design tools
-- Rich text editing capabilities
-- Font selection and styling
-- Position and animation controls
+#### Timeline Editor [Timeline.tsx](mdc:src/components/Timeline.tsx)
+- Multi-track video timeline management
+- Features:
+  - Multiple video and audio tracks
+  - Drag-and-drop clip arrangement
+  - Time-based effect markers
+  - Zoom and scroll controls
+- Track Management:
+  - Video track rendering
+  - Audio waveform visualization
+  - Clip trimming and splitting
+  - Track locking and visibility controls
+
+#### Text Design Tools [TextDesigner.tsx](mdc:src/components/TextDesigner.tsx)
+- Advanced text overlay system
+- Features:
+  - Rich text formatting
+  - Animation keyframes
+  - Font management
+  - Text effects and styles
+- Design Capabilities:
+  - Multiple text layers
+  - Custom fonts support
+  - Text animation presets
+  - Dynamic text scaling
+
+### Video Understanding
+
+#### Video Analysis UI [SubtitleExtractorDialog.tsx](mdc:src/components/SubtitleExtractorDialog.tsx)
+- Comprehensive video understanding interface
+- Features:
+  - Batch processing support
+  - Real-time progress tracking
+  - Multi-file queue management
+  - Error recovery system
+- Processing Stages:
+  1. Video to Audio Conversion
+     - MP4 to MP3 transformation
+     - Audio quality optimization
+     - Format validation
+  2. AI Processing
+     - ASR service integration
+     - Language detection
+     - Text segmentation
+  3. Results Management
+     - SRT file generation
+     - Timeline integration
+     - Quality verification
 
 ### Asset Management
-- [AssetPanel.tsx](mdc:src/components/AssetPanel.tsx) - Media asset organization
-- File import and management
-- Asset categorization and search
-- Preview thumbnails
 
-### Export Functionality
-- [ExportDialog.tsx](mdc:src/components/ExportDialog.tsx) - Video export interface
-- Multiple export format options
-- Quality and resolution settings
-- Progress tracking
+#### Media Organization [AssetPanel.tsx](mdc:src/components/AssetPanel.tsx)
+- Centralized media asset management
+- Features:
+  - File import system
+    - Drag-and-drop support
+    - Bulk import capabilities
+    - Format validation
+  - Asset categorization
+    - Type-based filtering
+    - Smart collections
+    - Search functionality
+  - Metadata management
+    - Duration tracking
+    - Resolution info
+    - Creation date
+  - "视频理解" Integration
+    - One-click processing
+    - Batch operation support
+    - Progress monitoring
+
+### Export System
+
+#### Export Interface [ExportDialog.tsx](mdc:src/components/ExportDialog.tsx)
+- Advanced export configuration
+- Features:
+  - Multiple format support
+    - MP4 (H.264/H.265)
+    - WebM
+    - GIF
+    - Custom formats
+  - Quality settings
+    - Resolution presets
+    - Bitrate control
+    - Quality optimization
+  - Batch export capabilities
+    - Queue management
+    - Progress tracking
+    - Error handling
+
+## AI Service Integration
+
+### Core AI Services [aiService.ts](mdc:src/services/aiService.ts)
+- Comprehensive AI processing system
+- Features:
+  1. ASR (Automatic Speech Recognition)
+     - Multiple language support
+     - Real-time processing
+     - Batch operation handling
+  2. Authentication
+     - API key management
+     - Session handling
+     - Rate limiting
+  3. Error Management
+     - Automatic retry logic
+     - Error classification
+     - Recovery procedures
+  4. Results Processing
+     - Text normalization
+     - Timing adjustment
+     - Quality verification
 
 ## FFmpeg Integration
 
-### FFmpeg Utilities
-- [ffmpeg.ts](mdc:src/utils/ffmpeg.ts) - Core FFmpeg integration
-- Video processing operations
-- Format conversion utilities
-- Performance optimization
+### Core FFmpeg Utilities [ffmpeg.ts](mdc:src/utils/ffmpeg.ts)
+- Advanced video processing capabilities
+- Features:
+  1. Format Conversion
+     - Video format transcoding
+     - Audio extraction
+     - Custom codec support
+  2. Video Processing
+     - Resolution adjustment
+     - Frame rate conversion
+     - Quality optimization
+  3. Audio Processing
+     - Channel management
+     - Sample rate adjustment
+     - Volume normalization
+  4. Performance Features
+     - Hardware acceleration
+     - Memory optimization
+     - Progress tracking
 
-### Key Features
-- Video format support (MP4, WebM, AVI, etc.)
-- Audio extraction and manipulation
-- Video compression and optimization
-- Frame extraction for thumbnails
-- Real-time preview generation
+### Batch Processing Implementation
 
-## State Management for Video Editing
+#### Progress Tracking
+- Multi-level progress monitoring
+  - Individual file progress
+  - Batch operation progress
+  - Overall task completion
+- Status Updates
+  - Real-time UI feedback
+  - Error state handling
+  - Success confirmation
 
-### Editor Store
-- [useEditorStore.ts](mdc:src/store/useEditorStore.ts) - Central state management
-- Video timeline state
-- Asset management
-- Export settings
-- UI state coordination
+#### Error Management
+- Comprehensive error handling
+  - Input validation
+  - Process monitoring
+  - Recovery procedures
+- User Feedback
+  - Clear error messages
+  - Recovery suggestions
+  - Progress preservation
 
-### State Structure
-```typescript
-interface EditorState {
-  timeline: TimelineState
-  assets: AssetState
-  preview: PreviewState
-  export: ExportState
-  ui: UIState
-}
-```
-
-## Performance Considerations
-- Use Web Workers for heavy video processing
-- Implement proper memory management for video assets
-- Optimize canvas rendering for smooth playback
-- Cache processed video segments
-- Use efficient data structures for timeline management
-
-## File Handling
-- Support for multiple video formats
-- Proper error handling for corrupted files
-- Progress indicators for large file operations
-- Memory-efficient file loading
-- Temporary file cleanup
-
-## User Experience
-- Real-time preview updates
-- Responsive timeline interaction
-- Intuitive drag-and-drop interface
-- Keyboard shortcuts for common operations
-- Undo/redo functionality
-description:
-globs:
-alwaysApply: false
----
+#### Performance Optimization
+- Resource Management
+  - Memory usage control
+  - CPU utilization
+  - Disk I/O optimization
+- Queue Management
+  - Priority handling
+  - Parallel processing
+  - Resource allocation

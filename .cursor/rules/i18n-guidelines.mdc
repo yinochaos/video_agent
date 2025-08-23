@@ -1,0 +1,58 @@
+---
+description: Internationalization and localization
+globs: src/utils/i18n.ts,src/components/*.tsx
+alwaysApply: false
+---
+# Internationalization (i18n) Guidelines
+
+## Translation System
+
+### i18n Utilities
+- [i18n.ts](mdc:src/utils/i18n.ts) - Core internationalization utilities
+- Use translation keys instead of hardcoded strings
+- Support multiple languages through translation tables
+- Handle fallback gracefully
+
+### Usage in Components
+```tsx
+import { t } from '../utils/i18n'
+
+// Later in the component
+<button title={t('importFiles', language)}>
+  <Plus size={16} />
+</button>
+```
+
+## Language Support
+
+### Currently Supported Languages
+- Chinese (zh) - Primary language
+- English (en) - Alternative language
+
+### Text Guidelines
+- Keep UI text concise and clear
+- Use consistent terminology across the application
+- Maintain proper text alignment for different languages
+- Use proper locale-specific formatting for dates, numbers, etc.
+
+## UI Considerations
+
+### Layout Adaptations
+- Design UI to accommodate text expansion/contraction
+- Use flexible layouts that adapt to content length
+- Avoid fixed-width containers for text
+- Test UI with all supported languages
+
+### Special Characters
+- Ensure proper rendering of special characters
+- Use Unicode-compatible fonts
+- Handle RTL languages properly if supported
+
+## Feature Naming
+
+### Consistent Terminology
+- Use standardized translations for feature names:
+  - "视频理解" (Video Understanding)
+  - "导出" (Export)
+  - "时间线" (Timeline)
+- Maintain consistent terminology in UI, documentation, and logs

@@ -1,5 +1,125 @@
 ---
-description:
-globs:
-alwaysApply: false
+description: Core project structure and organization
+alwaysApply: true
 ---
+# Project Structure
+
+## Main Directories
+
+### `src/` - Application Source Code
+- **components/** - React UI Components
+  - `AssetPanel.tsx` - Media file management and import
+  - `Preview.tsx` - Video preview and canvas rendering
+  - `Timeline.tsx` - Video timeline editing interface
+  - `TextDesigner.tsx` - Text overlay design tools
+  - `*Dialog.tsx` - Modal dialogs for various operations
+  - `SmartEditButton.tsx` - Smart editing controls
+  - `ChatPanel.tsx` - AI interaction interface
+
+- **services/** - Business Logic and API Services
+  - `aiService.ts` - AI and ASR service integration
+  - `smartEditService.ts` - Smart editing operations
+
+- **store/** - State Management (Zustand)
+  - `useEditorStore.ts` - Global editor state management
+    - Timeline state
+    - Media assets
+    - Project settings
+    - UI state
+
+- **styles/** - CSS Stylesheets
+  - `app.css` - Global application styles
+  - `theme.css` - Theme variables and settings
+  - `*-dialog.css` - Dialog-specific styles
+  - Component-specific CSS files
+
+- **utils/** - Utility Functions
+  - `ffmpeg.ts` - FFmpeg integration and video processing
+  - `i18n.ts` - Internationalization utilities
+  - `logger.ts` - Logging and debugging tools
+
+### `electron/` - Desktop Application
+- `main.ts` - Electron main process
+  - Window management
+  - IPC handlers
+  - File system operations
+- `preload.ts` - Secure bridge between main and renderer
+  - API exposure
+  - IPC communication
+  - Context isolation
+
+### `public/` - Static Assets
+- Application icons in various formats
+  - `icon-*.png` - PNG icons in different sizes
+  - `icon.ico` - Windows icon
+  - `icon.icns` - macOS icon
+- `vursor-icon.svg` - Vector logo
+- Other static resources
+
+### `scripts/` - Build and Utility Scripts
+- `create-final-icons.js` - Icon generation script
+- `simple-icon-gen.js` - Simple icon utilities
+- Build automation scripts
+- Development utilities
+
+## Key Files
+
+### Application Entry Points
+- [src/main.tsx](mdc:src/main.tsx)
+  - React application initialization
+  - Root component rendering
+  - Global providers setup
+  - Style imports
+
+### Electron Configuration
+- [electron/main.ts](mdc:electron/main.ts)
+  - Main process configuration
+  - Window creation and management
+  - IPC event handlers
+  - File system integration
+
+### Build Configuration
+- [vite.config.ts](mdc:vite.config.ts)
+  - Vite build settings
+  - Plugin configuration
+  - Environment variables
+  - Build optimizations
+
+### Type Definitions
+- [src/global.d.ts](mdc:src/global.d.ts)
+  - Global TypeScript declarations
+  - Module type definitions
+  - Environment type augmentation
+
+### Package Configuration
+- [package.json](mdc:package.json)
+  - Dependencies
+  - Scripts
+  - Electron builder config
+  - Project metadata
+
+### TypeScript Configuration
+- [tsconfig.json](mdc:tsconfig.json)
+  - Compiler options
+  - Path aliases
+  - Type checking rules
+  - Module resolution
+
+## Development Guidelines
+
+### File Organization
+- Keep related files close together
+- Use consistent naming conventions
+- Group components by feature when possible
+- Maintain clear separation of concerns
+
+### Import Conventions
+- Use relative paths for closely related files
+- Use absolute paths for cross-directory imports
+- Group imports by type (external, internal, styles)
+
+### Component Structure
+- One main component per file
+- Co-locate small helper components
+- Keep styles close to components
+- Follow consistent file naming patterns

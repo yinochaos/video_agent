@@ -92,10 +92,12 @@ const SubtitleExtractorDialog: React.FC<SubtitleExtractorDialogProps> = ({
       setMp3Path(outputPath)
       
       // 使用Electron API调用ffmpeg
-      if (window.electronAPI && window.electronAPI.convertToMp3) {
+      if (window.electronAPI) {
+        // 类型断言确保TypeScript识别这个方法
+        const electronAPI = window.electronAPI as any;
         addLog(`执行命令: ffmpeg -i "${mediaFile.path}" -vn -ar 16000 -ac 1 -b:a 32k -y "${outputPath}"`, 'info')
         
-        const result = await window.electronAPI.convertToMp3({
+        const result = await electronAPI.convertToMp3({
           inputPath: mediaFile.path,
           outputPath,
           onProgress: (p: number) => {
@@ -134,10 +136,12 @@ const SubtitleExtractorDialog: React.FC<SubtitleExtractorDialogProps> = ({
       setMp3Path(outputPath)
       
       // 使用Electron API调用ffmpeg
-      if (window.electronAPI && window.electronAPI.convertToMp3) {
+      if (window.electronAPI) {
+        // 类型断言确保TypeScript识别这个方法
+        const electronAPI = window.electronAPI as any;
         addLog(`执行命令: ffmpeg -i "${file.path}" -vn -ar 16000 -ac 1 -b:a 32k -y "${outputPath}"`, 'info')
         
-        const result = await window.electronAPI.convertToMp3({
+        const result = await electronAPI.convertToMp3({
           inputPath: file.path,
           outputPath,
           onProgress: (p: number) => {
@@ -174,7 +178,8 @@ const SubtitleExtractorDialog: React.FC<SubtitleExtractorDialogProps> = ({
       addLog('开始提取字幕...', 'info')
       
       // 读取MP3文件
-      const mp3File = await window.electronAPI.readFileAsBuffer(pathToUse)
+      const electronAPI = window.electronAPI as any;
+      const mp3File = await electronAPI.readFileAsBuffer(pathToUse)
       if (!mp3File || !mp3File.buffer) {
         throw new Error('无法读取MP3文件')
       }
@@ -217,7 +222,7 @@ const SubtitleExtractorDialog: React.FC<SubtitleExtractorDialogProps> = ({
         throw new Error('响应中没有找到字幕内容')
       }
     } catch (error) {
-      addLog(`字幕提取失败: ${error instanceof Error ? error.message : String(error)}`, 'error')
+      addLog(`视频理解失败: ${error instanceof Error ? error.message : String(error)}`, 'error')
       return false
     }
   }, [mp3Path, addLog])
@@ -237,8 +242,9 @@ const SubtitleExtractorDialog: React.FC<SubtitleExtractorDialogProps> = ({
       
       addLog(`正在保存SRT文件: ${srtPath}`, 'info')
       
-      if (window.electronAPI && window.electronAPI.writeFile) {
-        const result = await window.electronAPI.writeFile({
+      if (window.electronAPI) {
+        const electronAPI = window.electronAPI as any;
+        const result = await electronAPI.writeFile({
           path: srtPath,
           content
         })
@@ -260,7 +266,7 @@ const SubtitleExtractorDialog: React.FC<SubtitleExtractorDialogProps> = ({
     }
   }, [mediaFile, addLog])
 
-  // 完整的字幕提取流程
+  // 完整的视频理解流程
   const extractSubtitles = useCallback(async () => {
     try {
       setIsLoading(true)
@@ -274,7 +280,7 @@ const SubtitleExtractorDialog: React.FC<SubtitleExtractorDialogProps> = ({
       // 步骤2: 提取字幕
       const subtitles = await extractSubtitlesFromMp3()
       if (!subtitles) {
-        throw new Error('字幕提取失败')
+        throw new Error('视频理解失败')
       }
       
       // 步骤3: 保存SRT文件
@@ -283,9 +289,9 @@ const SubtitleExtractorDialog: React.FC<SubtitleExtractorDialogProps> = ({
         throw new Error('SRT文件保存失败')
       }
       
-      addLog('字幕提取完成！', 'success')
+      addLog('视频理解完成！', 'success')
     } catch (error) {
-      addLog(`字幕提取过程中出错: ${error instanceof Error ? error.message : String(error)}`, 'error')
+      addLog(`视频理解过程中出错: ${error instanceof Error ? error.message : String(error)}`, 'error')
     } finally {
       setIsLoading(false)
     }
@@ -310,7 +316,10 @@ const SubtitleExtractorDialog: React.FC<SubtitleExtractorDialogProps> = ({
     for (let i = 0; i < videoFiles.length; i++) {
       const file = videoFiles[i]
       setCurrentBatchIndex(i)
-      setBatchProgress(Math.round((i / videoFiles.length) * 100))
+      
+      // 实时更新批量处理进度
+      const fileProgressPercentage = Math.round((i / videoFiles.length) * 100)
+      setBatchProgress(fileProgressPercentage)
       
       addLog(`[${i + 1}/${videoFiles.length}] 处理文件: ${file.name}`, 'info')
       
@@ -332,7 +341,7 @@ const SubtitleExtractorDialog: React.FC<SubtitleExtractorDialogProps> = ({
         addLog(`[${i + 1}/${videoFiles.length}] 开始提取字幕...`, 'info')
         const subtitles = await extractSubtitlesFromMp3(mp3Result.outputPath)
         if (!subtitles) {
-          throw new Error('字幕提取失败')
+          throw new Error('视频理解失败')
         }
         
         // 保存SRT文件
@@ -361,6 +370,33 @@ const SubtitleExtractorDialog: React.FC<SubtitleExtractorDialogProps> = ({
     addLog(`批量处理完成: 成功 ${successCount} 个, 失败 ${failCount} 个`, successCount === results.length ? 'success' : 'info')
   }, [mediaFiles, addLog, convertToMp3ForBatch, extractSubtitlesFromMp3, saveSrtFile])
 
+  // 批量处理总进度 - 增强版进度计算
+  useEffect(() => {
+    if (isBatchProcessing) {
+      const totalFiles = batchFiles.length
+      if (totalFiles > 0) {
+        // 基本文件进度（已完成的文件）
+        const completedFilesProgress = (currentBatchIndex / totalFiles) * 100
+        
+        // 当前处理文件的进度贡献
+        const currentFileProgress = progress / totalFiles
+        
+        // 总体进度 = 已完成文件进度 + 当前文件进度贡献
+        const overallProgress = completedFilesProgress + currentFileProgress
+        
+        // 平滑更新进度，避免突变
+        setBatchProgress(prev => {
+          // 如果新进度比旧进度小，但差距不大，保持旧进度（避免进度倒退）
+          if (prev > overallProgress && prev - overallProgress < 5) {
+            return prev;
+          }
+          // 限制在0-100范围内
+          return Math.min(Math.max(overallProgress, 0), 100);
+        });
+      }
+    }
+  }, [progress, currentBatchIndex, batchFiles, isBatchProcessing])
+
   // 当对话框打开时，重置状态并开始处理
   useEffect(() => {
     if (isOpen) {
@@ -368,7 +404,7 @@ const SubtitleExtractorDialog: React.FC<SubtitleExtractorDialogProps> = ({
       
       if (isBatchMode) {
         // 批量模式，显示批量处理界面
-        addLog(`批量字幕提取模式已启动`, 'info')
+        addLog(`批量视频理解模式已启动`, 'info')
         setBatchFiles(mediaFiles.filter(file => file.type === 'video'))
       } else if (mediaFile) {
         // 单文件模式，自动开始处理
@@ -384,7 +420,7 @@ const SubtitleExtractorDialog: React.FC<SubtitleExtractorDialogProps> = ({
     <div className="subtitle-extractor-dialog-overlay">
       <div className="subtitle-extractor-dialog">
         <div className="subtitle-extractor-dialog-header">
-          <h2>{isBatchMode ? '批量字幕提取' : '字幕提取'}</h2>
+          <h2>{isBatchMode ? '批量视频理解' : '视频理解'}</h2>
           <button className="close-button" onClick={onClose}>×</button>
         </div>
         
@@ -404,6 +440,19 @@ const SubtitleExtractorDialog: React.FC<SubtitleExtractorDialogProps> = ({
                      batchProgress === 100 ? '处理完成' : '等待开始'}
                   </div>
                 </div>
+                
+                {isLoading && (
+                  <div className="realtime-progress-info">
+                    <div className="realtime-progress-header">
+                      实时处理进度: {batchProgress.toFixed(1)}%
+                    </div>
+                    <div className="realtime-progress-details">
+                      <span>总文件数: {batchFiles.length}</span>
+                      <span>已处理: {currentBatchIndex}</span>
+                      <span>剩余: {batchFiles.length - currentBatchIndex}</span>
+                    </div>
+                  </div>
+                )}
                 
                 {!isLoading && batchProgress === 0 && (
                   <button 
@@ -439,7 +488,7 @@ const SubtitleExtractorDialog: React.FC<SubtitleExtractorDialogProps> = ({
                           1. 转换为MP3
                         </div>
                         <div className={`progress-step ${step === 'extracting' ? 'active' : (progress >= 90 ? 'completed' : '')}`}>
-                          2. 提取字幕
+                          2. 视频理解
                         </div>
                         <div className={`progress-step ${step === 'saving' || step === 'completed' ? 'active' : ''} ${step === 'completed' ? 'completed' : ''}`}>
                           3. 保存SRT
@@ -499,7 +548,7 @@ const SubtitleExtractorDialog: React.FC<SubtitleExtractorDialogProps> = ({
                     1. 转换为MP3
                   </div>
                   <div className={`progress-step ${step === 'extracting' ? 'active' : (progress >= 90 ? 'completed' : '')}`}>
-                    2. 提取字幕
+                    2. 视频理解
                   </div>
                   <div className={`progress-step ${step === 'saving' || step === 'completed' ? 'active' : ''} ${step === 'completed' ? 'completed' : ''}`}>
                     3. 保存SRT

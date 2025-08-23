@@ -199,7 +199,7 @@ const AssetPanel: React.FC = () => {
     clearSelection()
   }, [selectedMediaFiles, removeMediaFile, clearSelection])
   
-  // 处理单个文件字幕提取
+  // 处理单个文件视频理解
   const handleExtractSubtitles = useCallback((file: MediaFile) => {
     if (file.type !== 'video') {
       console.warn('只能为视频文件提取字幕')
@@ -211,7 +211,7 @@ const AssetPanel: React.FC = () => {
     setShowSubtitleExtractor(true)
   }, [])
   
-  // 处理批量字幕提取
+  // 处理批量视频理解
   const handleBatchExtractSubtitles = useCallback(() => {
     // 获取所有视频文件
     const videoFiles = mediaFiles.filter(file => file.type === 'video')
@@ -248,7 +248,7 @@ const AssetPanel: React.FC = () => {
           <button
             className="btn btn-secondary"
             onClick={handleBatchExtractSubtitles}
-            title="批量提取字幕"
+            title="批量视频理解"
           >
             <Subtitles size={16} />
           </button>
@@ -319,7 +319,7 @@ const AssetPanel: React.FC = () => {
                           e.stopPropagation();
                           handleExtractSubtitles(file);
                         }}
-                        title="提取字幕"
+                        title="视频理解"
                       >
                         <Subtitles size={14} />
                       </button>
@@ -332,7 +332,7 @@ const AssetPanel: React.FC = () => {
         )}
       </div>
       
-      {/* 字幕提取对话框 */}
+      {/* 视频理解对话框 */}
       <SubtitleExtractorDialog
         isOpen={showSubtitleExtractor}
         onClose={() => setShowSubtitleExtractor(false)}

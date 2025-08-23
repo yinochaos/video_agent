@@ -1,0 +1,40 @@
+---
+description: Electron integration and desktop features
+globs: electron/*.ts
+alwaysApply: false
+---
+# Electron Integration
+
+## Core Electron Files
+- [electron/main.ts](mdc:electron/main.ts) - Main process entry point
+- [electron/preload.ts](mdc:electron/preload.ts) - Preload script for security
+
+## IPC Communication
+- Use contextBridge for secure renderer access
+- Expose only necessary APIs through preload
+- Follow proper IPC naming conventions
+- Handle errors appropriately across IPC boundaries
+
+## File System Operations
+- Use Electron's fs API for file operations
+- Implement proper error handling for file access
+- Support drag-and-drop file imports
+- Handle large media files efficiently
+
+## FFmpeg Integration
+- Use Electron for native FFmpeg execution
+- Provide progress updates via IPC
+- Handle FFmpeg process errors
+- Clean up temporary files after processing
+
+## UI Integration
+- Match desktop UI to web application
+- Support system-native dialogs
+- Implement proper window management
+- Handle application lifecycle events
+
+## Security Considerations
+- Follow Electron security best practices
+- Validate all inputs from renderer process
+- Use content security policies
+- Sanitize file paths and command arguments

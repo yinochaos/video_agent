@@ -304,6 +304,49 @@
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.7);
 }
 
+/* 实时进度信息样式 */
+.realtime-progress-info {
+  background-color: #2d3748;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 8px;
+  border: 1px solid #4a5568;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(74, 144, 226, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(74, 144, 226, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(74, 144, 226, 0);
+  }
+}
+
+.realtime-progress-header {
+  color: #4a90e2;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.realtime-progress-details {
+  display: flex;
+  justify-content: space-between;
+  color: #e0e0e0;
+  font-size: 12px;
+}
+
+.realtime-progress-details span {
+  background-color: #1a202c;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #4a5568;
+}
+
 .start-batch-button {
   background-color: #4a90e2;
   color: white;
